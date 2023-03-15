@@ -22,7 +22,7 @@ jobs:
       - name: Install Trunk
         uses: jetli/trunk-action@v0.4.0
 
-      - name: Install Wamn bindgen
+      - name: Install Wasm bindgen
         uses: jetli/wasm-bindgen-action@v0.2.0
 
       - name: Checkout sources
