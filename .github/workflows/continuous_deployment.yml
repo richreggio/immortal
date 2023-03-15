@@ -1,0 +1,38 @@
+name: Continuous deployment
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+
+      - name: Install Trunk
+        uses: jetli/trunk-action@v0.4.0
+
+      - name: Install Wamn bindgen
+        uses: jetli/wasm-bindgen-action@v0.2.0
+
+      - name: Checkout sources
+        uses: actions/checkout@v3
+
+      - name: Run trunk build
+        run: trunk build --release --public-url /${{ github.event.repository.name }}/
+
+      - uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/master'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
